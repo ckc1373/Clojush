@@ -49,6 +49,7 @@
           fn-element))
       element)))
 
+
 (defn random-plush-instruction-map
   "Returns a random instruction map given the atom-generators and the required
    epigenetic-markers."
@@ -73,6 +74,7 @@
                                  true
                                  false)
                        :random-insertion true
+                       :hotspot (float (/ (lrand-int 100) 100))
                        :uuid (java.util.UUID/randomUUID)
                        ))
                    markers)))))
@@ -156,4 +158,3 @@
                                     atom-generators
                                     argmap)}
       argmap)))
-
