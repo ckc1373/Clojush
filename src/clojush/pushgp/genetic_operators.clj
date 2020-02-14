@@ -753,16 +753,14 @@ given by uniform-deletion-rate.
                              (> (count result-genome) (/ max-points 4)) ;; runaway growth
                              (<= iteration-budget 0)) ;; looping too long
                        result-genome  ;; Return
-                       ; if current hotspot is less than opposite hotspot switch
-                       (if (>= (if (>= i (count (if use-s1 s2 s1))) 0 (get (nth (if use-s1 s2 s1) i) :hotspot))
-                              (get (nth (if use-s1 s1 s2) i) :hotspot))
+                       ; if current hotspot is more than random number
+                       (if (< (lrand) (get (nth (if use-s1 s1 s2) i) :hotspot))
                          (recur (max 0 (+' (+ i 1) (Math/round (*' alignment-deviation
                                                                  (gaussian-noise-factor)))))
                                 (not use-s1)
-                                ; Maybe improve hotspot change factor - round?
                                 (conj result-genome (if (>= i (count (if use-s1 s2 s1)))
                                                       (nth (if use-s1 s1 s2) i)
-                                                      (update (nth (if use-s1 s2 s1) i) :hotspot * (/ (lrand 95 110) 100))))
+                                                      (update (nth (if use-s1 s2 s1) i) :hotspot * (gaussian-noise-factor))))
                                 (dec iteration-budget))
                          (recur (inc i)
                                 use-s1
