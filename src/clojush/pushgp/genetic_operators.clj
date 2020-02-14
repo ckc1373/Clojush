@@ -760,7 +760,9 @@ given by uniform-deletion-rate.
                                                                  (gaussian-noise-factor)))))
                                 (not use-s1)
                                 ; Maybe improve hotspot change factor - round?
-                                (conj result-genome (update (nth (if use-s1 s2 s1) i) :hotspot * (/ (lrand 95 110) 100)))
+                                (conj result-genome (if (>= i (count (if use-s1 s2 s1)))
+                                                      (nth (if use-s1 s1 s2) i)
+                                                      (update (nth (if use-s1 s2 s1) i) :hotspot * (/ (lrand 95 110) 100))))
                                 (dec iteration-budget))
                          (recur (inc i)
                                 use-s1
