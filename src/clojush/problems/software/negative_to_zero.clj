@@ -17,7 +17,9 @@
         [clojush pushstate interpreter random util globals]
         clojush.instructions.tag
         [clojure.math numeric-tower combinatorics]
-        ))
+        )
+  (:require [clojush.instructions.software-problems :as sp]))
+
 
 ; Atom generators
 (def negative-to-zero-atom-generators
@@ -159,6 +161,7 @@
    :training-cases (first negative-to-zero-train-and-test-cases)
    :sub-training-cases '()
    :atom-generators negative-to-zero-atom-generators
+   :boosted-atom-generators (sp/get-instructions :negative-to-zero)
    :max-points 2000
    :max-genome-size-in-initial-program 250
    :evalpush-limit 1500

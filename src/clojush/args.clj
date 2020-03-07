@@ -36,6 +36,15 @@
                                  (fn [] (lrand))))
           ;; The instructions that pushgp will use in random code.
 
+         :boosted-atom-generators nil
+          ;; If not nil, should be a list of instructions/atom generators
+          ;; to use at an increased rate compared to other atom generators
+
+         :boosted-atom-generators-probability 0.9
+          ;; Probability to use an atom generator from the boosted-atom-generators
+          ;; instead of from the normal list of atom generators. Used only if
+          ;; :boosted-atom-generators is not nil
+
          :population-size 1000
           ;; Number of individuals in the population.
 
@@ -85,7 +94,7 @@
          :sub-training-cases '()
           ;; The subsample of the training cases used for downsampled lexicase.
 
-         
+
           ;;----------------------------------------
           ;; Genetic operator probabilities
           ;;----------------------------------------
@@ -190,7 +199,7 @@
           ;; or that a pair of segments will be transposed with uniform-segment-reordering.
 
          :uniform-segmenting-rate 0.01
-          ;; The probability that segmenting for uniform-segment-transposition or 
+          ;; The probability that segmenting for uniform-segment-transposition or
           ;; uniform-segment-transposition will occur at each position in the genome.
 
          :uniform-transposition-rate 0.01
@@ -340,7 +349,7 @@
          :epsilon-lexicase-version :semi-dynamic
           ;; The version of epsilon-lexicase selection to use.
           ;; Options: :semi-dynamic (default and recommended), :dynamic, :static
-         
+
          :epsilon-lexicase-epsilon nil
           ;; When parent-selection is :epsilon-lexicase,
           ;; the value for epsilon. If nil, automatic epsilon lexicase selection will be used.
@@ -387,7 +396,7 @@
          ;; When set to integer > 1, sets the batch size for batch lexicase selection.
          ;; Should work with any parent selection that uses an individual's :errors,
          ;; such as lexicase, epsilon-lexicase, etc.
-         
+
          :tournament-size 7
           ;; If using tournament selection, the size of the tournaments.
 
@@ -429,7 +438,7 @@
           ;; If truthy, should be an integer which will be the number of history elements
           ;; used to calculate :lineage-redundancy meta-errors.
 
-         :decimation-ratio 1 
+         :decimation-ratio 1
           ;; If >= 1, does nothing. Otherwise, is the percent of the population
           ;; size that is retained before breeding. If 0 < decimation-ratio < 1, decimation
           ;; tournaments will be used to reduce the population to size (* population-size
@@ -444,7 +453,7 @@
 
          :print-preselection-fraction false
           ;; If true, keeps track of and prints the number of individuals that survive preselection
-          ;; each generation. Does not take into account one-individual-per-error-vector-for-lexicase. 
+          ;; each generation. Does not take into account one-individual-per-error-vector-for-lexicase.
 
          :self-mate-avoidance-limit 0
           ;; If non-zero, then when multiple parents are required for a genetic operator, an

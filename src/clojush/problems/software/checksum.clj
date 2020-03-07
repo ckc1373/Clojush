@@ -7,7 +7,7 @@
 ;;   doi: 10.1109/TSE.2015.2454513
 ;;
 ;; Given a string (max length 50), compute the integer values of the characters
-;; in the string, sum them, take the sum modulo 64, add the value of the \space 
+;; in the string, sum them, take the sum modulo 64, add the value of the \space
 ;; character, and then convert that integer back into its corresponding character
 ;; (the checksum). Program must print "Check sum is X", where X is replaced by
 ;; the correct checksum.
@@ -19,7 +19,9 @@
         [clojush pushstate interpreter random util globals]
         clojush.instructions.tag
         clojure.math.numeric-tower
-        ))
+        )
+  (:require [clojush.instructions.software-problems :as sp] :reload))
+
 
 ; Atom generators
 (def checksum-atom-generators
@@ -38,7 +40,6 @@
             ;;; end input instructions
             )
           (registered-for-stacks [:integer :boolean :string :char :exec :print])))
-
 
 ;; Define test cases
 (defn checksum-input
@@ -166,6 +167,7 @@
                                                             (second checksum-train-and-test-cases))
    :training-cases (first checksum-train-and-test-cases)
    :atom-generators checksum-atom-generators
+   :boosted-atom-generators (sp/get-instructions :checksum)
    :max-points 3200
    :max-genome-size-in-initial-program 400
    :evalpush-limit 1500

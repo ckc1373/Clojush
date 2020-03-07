@@ -1,5 +1,5 @@
 (ns clojush.instructions.random-instructions
-  (:use [clojush pushstate random globals translate])
+  (:use [clojush pushstate random globals translate args])
   (:require [clojure.math.numeric-tower :as math]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,7 +54,7 @@
       (binding [*out* *err*]
         (println "code_rand_atom: global-atom-generators is empty.")
         state)
-      (push-item (random-atom @global-atom-generators)
+      (push-item (random-atom @global-atom-generators @push-argmap 0 0)
                  :code
                  state))))
 
@@ -67,8 +67,8 @@
                    (+' min-random-string-length
                        (lrand-int (- max-random-string-length
                                      min-random-string-length)))
-                   (fn [] (lrand-nth (vec (concat ["\n" "\t"] 
-                                                  (map (comp str char) 
+                   (fn [] (lrand-nth (vec (concat ["\n" "\t"]
+                                                  (map (comp str char)
                                                        (range 32 127))))))))
       :string
       state)))
@@ -77,8 +77,7 @@
   char_rand
   ^{:stack-types [:char :random]}
   (fn [state]
-    (push-item (lrand-nth (vec (concat [\newline \tab] 
+    (push-item (lrand-nth (vec (concat [\newline \tab]
                                        (map char (range 32 127)))))
                :char
                state)))
-
