@@ -45,6 +45,9 @@
           ;; instead of from the normal list of atom generators. Used only if
           ;; :boosted-atom-generators is not nil
 
+         :boosted-atom-generators-section-count 8
+          ;; The number of sections the boosted-atom-generators will be divided into
+
          :population-size 1000
           ;; Number of individuals in the population.
 

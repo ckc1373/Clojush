@@ -1,4 +1,5 @@
-(ns clojush.instructions.software-problems)
+(ns clojush.instructions.software-problems
+    (:use [clojush args]))
 
 (def problem-instruction-map
   { :string-differences '[(in1 in2 string_parse_to_chars in1 exec_string_iterate boolean_or char_dup string_dup string_containschar exec_if char_iswhitespace boolean_not string_emptystring string_fromchar print_char boolean_stackdepth print_integer exec_dup \newline char_empty char_allfromstring \space print_char print_char) ]
@@ -68,17 +69,17 @@
    :x-word-lines '(\space \newline)
    })
 
-(defn div-quarters [sol]
+(defn div-sections [sol sec-num]
   (let [num (count sol)
-       quart (quot num 4)
-       remain (rem num 4)
-       k (* (inc quart) remain)]
+       section (quot num sec-num)
+       remain (rem num sec-num)
+       k (* (inc section) remain)]
        (concat
-         (partition-all (inc quart) (take k sol))
-         (partition-all quart (drop k sol)))))
+         (partition-all (inc section) (take k sol))
+         (partition-all section (drop k sol)))))
 
-(defn return-quarter [quarter instr-vecs]
-  (map (fn [instr-vec] (map (fn [sol] (nth sol quarter)) instr-vec)) instr-vecs))
+(defn return-section [sec-num instr-vecs]
+  (map (fn [instr-vec] (map (fn [sol] (if (< sec-num (count sol))(nth sol sec-num))) instr-vec)) instr-vecs))
 
 (defn get-instructions
   "Helper function to get instructions from the problem-instruction-map.
@@ -89,32 +90,36 @@
   [problem]
   (assert (some #{problem} (keys problem-instruction-map))
           (str "Problem " problem " isn't in problem-instruction-map."))
-  (let [map-without-problem (dissoc problem-instruction-map problem)
+  (let [sec-num 8
+        map-without-problem (dissoc problem-instruction-map problem)
         instr-vecs (vals map-without-problem)
         instr-vecs-same-length (map (fn [instr-vec]
                                         (take 100 (cycle instr-vec)))
                                         instr-vecs)
-        instr-vecs-quart (map (fn [instr-vec]
-                            (map (fn [sol] (div-quarters sol)) instr-vec)) instr-vecs-same-length)
-        quartered-instr-vecs [(return-quarter 0 instr-vecs-quart)
-                              (return-quarter 1 instr-vecs-quart)
-                              (return-quarter 2 instr-vecs-quart)
-                              (return-quarter 3 instr-vecs-quart)]
-        quartered-instructions (map (fn [quarter]
+        instr-vecs-sectioned (map (fn [instr-vec]
+                            (map (fn [sol] (div-sections sol sec-num)) instr-vec)) instr-vecs-same-length)
+        sectioned-instr-vecs (loop [x sec-num
+                                    ret-vec []]
+                                    (if (<= x 0)
+                                      ret-vec
+                                      (recur (- x 1)
+                                            (conj ret-vec (return-section (- sec-num x) instr-vecs-sectioned)))))
+        sectioned-instructions (map (fn [secnum]
                                 (apply concat (map (fn [solutions]
-                                 (apply concat (map (fn [sol] (take 30 (cycle sol))) solutions))) quarter))) quartered-instr-vecs)
-        quarters-remove-inN (map (fn [quarter] (filter #(not (some #{%} #{'in1 'in2 'in3 'in4 'in5}))
-                                             quarter)) quartered-instructions)
-        with-inN-instructions (map-indexed (fn [idx quarter] (concat quarter
-                                                      (take (- (count (nth quartered-instructions idx)) (count quarter))
+                                 (apply concat (map (fn [sol] (take 30 (cycle sol))) solutions))) secnum))) sectioned-instr-vecs)
+        sections-remove-inN (map (fn [secnum] (filter #(not (some #{%} #{'in1 'in2 'in3 'in4 'in5}))
+                                             secnum)) sectioned-instructions)
+        with-inN-instructions (map-indexed (fn [idx secnum] (concat secnum
+                                                      (take (- (count (nth sectioned-instructions idx)) (count secnum))
                                                             (cycle (get-inN-instructions problem)))))
-                                                      quarters-remove-inN)
-        final-instructions (map (fn [quarter] (vec (concat quarter
+                                                      sections-remove-inN)
+        final-instructions (map (fn [secnum] (vec (concat secnum
                                                       (take 6000
                                                             (cycle (get problem-specific-constants problem))))))
                                                       with-inN-instructions)
         ]
-        final-instructions))
+        final-instructions
+        ))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
